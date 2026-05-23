@@ -1,0 +1,4 @@
+.env
+node_modules
+data/devbrief.db
+.DS_Store
