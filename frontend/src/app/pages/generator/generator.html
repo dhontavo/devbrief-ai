@@ -38,10 +38,7 @@
       <label>TU CÓDIGO</label>
       <span class="char-count">{{ characterCount }} caracteres</span>
     </div>
-    <textarea 
-      class="code-editor" 
-      [(ngModel)]="code" 
-      placeholder="// Pega aquí tu código..."></textarea>
+    <textarea class="code-editor" [(ngModel)]="code" placeholder="// Pega aquí tu código..."></textarea>
   </div>
 
   <!-- Generate Button -->
@@ -56,7 +53,7 @@
       <div class="result-title">
         <mat-icon>article</mat-icon>
         <span>Resultado</span>
-        <span class="result-badge">README</span>
+        <span class="result-badge">{{docType}}</span>
       </div>
       <div class="result-actions">
         <button class="icon-btn" (click)="copyResult()" title="Copiar">

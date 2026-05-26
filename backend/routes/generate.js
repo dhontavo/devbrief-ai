@@ -12,7 +12,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
   // Verificar limite gratuito
   const count = db.prepare('SELECT COUNT(*) as total FROM generations WHERE user_id = ?')
-    .get(req.user.id).total;
+    .get(req.user?.id).total;
   if (count >= FREE_LIMIT)
     return res.status(403).json({ error: 'Limite del plan gratuito alcanzado', limit: FREE_LIMIT });
 
@@ -31,8 +31,14 @@ router.post('/', authMiddleware, async (req, res) => {
 router.get('/history', authMiddleware, (req, res) => {
   const history = db.prepare(
     'SELECT id, doc_type, language, result, created_at FROM generations WHERE user_id = ? ORDER BY created_at DESC LIMIT 20'
-  ).all(req.user.id);
+  ).all(req.user?.id);
+
+  if (history.length === 0) {
+    return res.status(200).json({ message: 'No hay historial disponible.' });
+  }
+
   res.json(history);
 });
+
 
 module.exports = router;

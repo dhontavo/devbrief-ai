@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { GenerateService } from '../../services/generate.service';
 
 @Component({
   selector: 'app-generator',
@@ -35,6 +36,8 @@ export class Generator implements OnInit {
     { value: 'python', label: 'Python' }
   ];
 
+  constructor(private generateService: GenerateService) { }
+
   ngOnInit() {
     // Initial state
   }
@@ -46,13 +49,26 @@ export class Generator implements OnInit {
   generate() {
     if (!this.code) return;
     this.isGenerating = true;
-    
-    // Simulate API call for the mockup
-    setTimeout(() => {
-      this.result = `# AuthService\n\nServicio de autenticación que gestiona la generación y validación de tokens JWT para usuarios de la aplicación.\n\n## Instalación\n\n\`\`\`bash\ndotnet add package Microsoft.AspNetCore.Authentication.JwtBearer\n\`\`\`\n\n## Uso\n\n\`\`\`csharp\npublic async Task<string> GenerateToken(User user) {\n  // ...\n}\n\`\`\``;
-      this.isGenerating = false;
-      this.remaining--;
-    }, 1500);
+
+    this.docType = this.docTypes.find(t => t.value === this.docType)?.label || 'README para GitHub';
+
+    this.generateService.generate(this.code, this.docType, this.language).subscribe({
+      next: (response) => {
+        this.result = response.result;
+        this.isGenerating = false;
+        this.remaining--;
+      },
+      error: (error) => {
+        console.error('Error al generar documentación:', error);
+        setTimeout(() => {
+          this.result = "";
+          this.isGenerating = false;
+          this.remaining--;
+        }, 1500);
+      }
+    });
+
+
   }
 
   copyResult() {

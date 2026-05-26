@@ -15,7 +15,7 @@ export class GenerateService {
 
   generate(code: string, docType: string, language: string) {
     return this.http.post<{ result: string, remaining: number }>
-      (`${this.api}/generate`, { code, docType, language }, { headers: this.headers() });
+      (`${this.api}/`, { code, docType, language }, { headers: this.headers() });
   }
 
   getHistory() {
