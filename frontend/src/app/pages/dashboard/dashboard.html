@@ -1,0 +1,105 @@
+<mat-toolbar color="primary" class="custom-toolbar">
+    <span>DevBrief AI</span>
+    <span style="flex: 1"></span>
+    <span style="font-size: 13px; margin-right: 16px;">{{ email }}</span>
+    <button mat-icon-button (click)="logout()" matTooltip="Cerrar sesión">
+        <mat-icon>logout</mat-icon>
+    </button>
+</mat-toolbar>
+
+<div class="dashboard-wrapper">
+    <!-- Header Title Section -->
+    <div class="dashboard-header">
+        <div class="header-titles">
+            <h1 class="main-title">Mi historial</h1>
+            <p class="sub-title">Tus documentaciones generadas</p>
+        </div>
+        <div class="header-actions">
+            <span class="plan-badge">Plan gratuito</span>
+            <button class="new-gen-btn" (click)="goToGenerator()" [disabled]="remaining === 0">
+                <mat-icon>add</mat-icon> Nueva generación
+            </button>
+        </div>
+    </div>
+
+    <!-- Top Stats Row -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">GENERACIONES USADAS</div>
+            <div class="stat-value">{{ used }}</div>
+            <div class="stat-desc">de {{ limit }} disponibles</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">RESTANTES</div>
+            <div class="stat-value">{{ remaining }}</div>
+            <div class="stat-desc">en plan gratuito</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">ÚLTIMA GENERACIÓN</div>
+            <div class="stat-value">{{ generations.length > 0 ? 'Hoy' : 'Ninguna' }}</div>
+            <div class="stat-desc">{{ generations.length > 0 ? formatDate(generations[0].created_at) : '-' }}</div>
+        </div>
+    </div>
+
+    <h2 class="section-title">Generaciones recientes</h2>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+        <mat-spinner diameter="40"></mat-spinner>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && generations.length === 0" class="empty-state">
+        <mat-icon class="empty-icon">description</mat-icon>
+        <p>Aún no tienes generaciones. ¡Crea tu primera!</p>
+        <button class="new-gen-btn primary-btn" (click)="goToGenerator()">Generar documentación</button>
+        <!-- <button class="new-gen-btn primary-btn" href="/generator">Generar documentación</button> -->
+    </div>
+
+    <!-- List State -->
+    <div *ngIf="!loading && generations.length > 0" class="generations-list">
+        <div class="generation-card" *ngFor="let gen of generations">
+            <div class="gen-left">
+                <div class="gen-icon" [ngClass]="getLanguageClass(gen.language)">
+                    <mat-icon>{{ docTypeIcons[gen.doc_type] || 'description' }}</mat-icon>
+                </div>
+                <div class="gen-info">
+                    <h3 class="gen-title">{{ docTypeLabels[gen.doc_type] || gen.doc_type }} — archivo {{ gen.language }}
+                    </h3>
+                    <div class="gen-meta">
+                        <span class="lang-badge" [ngClass]="getLanguageClass(gen.language) + '-text'">{{ gen.language
+                            }}</span>
+                        <span class="meta-dot">•</span>
+                        <span class="meta-text">{{ docTypeLabels[gen.doc_type] || gen.doc_type }}</span>
+                        <span class="meta-dot">•</span>
+                        <span class="meta-text">{{ formatDate(gen.created_at) }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="gen-actions">
+                <button class="icon-btn" (click)="copyResult(gen.result)" title="Copiar">
+                    <mat-icon>content_copy</mat-icon>
+                </button>
+                <button class="icon-btn" title="Ver detalles">
+                    <mat-icon>more_horiz</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Bar Footer -->
+    <div class="usage-footer-card">
+        <div class="usage-header">
+            <span class="usage-label">Uso del plan gratuito</span>
+            <span class="usage-count"><b>{{ used }}</b> / {{ limit }} generaciones</span>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" [style.width.%]="usagePercent"></div>
+        </div>
+        <div class="usage-desc">
+            Te quedan {{ remaining }} generaciones gratuitas. Actualiza tu plan para acceso ilimitado.
+        </div>
+    </div>
+</div>

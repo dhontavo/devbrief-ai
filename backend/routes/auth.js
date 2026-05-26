@@ -9,7 +9,7 @@ const router = express.Router();
 // ─── POST /api/auth/register ──────────────────────────────────────────────────
 
 router.post('/register', authLimiter, async (req, res) => {
-  const { email, password, name } = req.body;
+  const { email, password } = req.body;
 
   // Validation
   if (!email || !password) {
@@ -39,13 +39,13 @@ router.post('/register', authLimiter, async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const { lastInsertRowid } = db.prepare(
-      'INSERT INTO users (email, password, name) VALUES (?, ?, ?)'
-    ).run(email.toLowerCase(), hashedPassword, name || null);
+      'INSERT INTO users (email, password) VALUES (?, ?)'
+    ).run(email.toLowerCase(), hashedPassword);
 
-    const user = db.prepare('SELECT id, email, name, created_at FROM users WHERE id = ?').get(lastInsertRowid);
+    const user = db.prepare('SELECT id, email, created_at FROM users WHERE id = ?').get(lastInsertRowid);
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, name: user.name },
+      { id: user.id, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
@@ -81,7 +81,7 @@ router.post('/login', authLimiter, async (req, res) => {
   }
 
   const token = jwt.sign(
-    { id: user.id, email: user.email, name: user.name },
+    { id: user.id, email: user.email },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
   );
@@ -96,7 +96,7 @@ const auth = require('../middleware/auth');
 
 router.get('/me', auth, (req, res) => {
   const user = db
-    .prepare('SELECT id, email, name, created_at FROM users WHERE id = ?')
+    .prepare('SELECT id, email, created_at FROM users WHERE id = ?')
     .get(req.user.id);
 
   if (!user) {

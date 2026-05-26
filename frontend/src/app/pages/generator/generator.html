@@ -1,0 +1,77 @@
+<app-navbar></app-navbar>
+
+<div class="generator-wrapper">
+  <!-- Header -->
+  <div class="header-section">
+    <div class="header-titles">
+      <h1 class="main-title">Nueva documentación</h1>
+      <p class="sub-title">Pega tu código y elige el tipo de documento que quieres generar</p>
+    </div>
+    <div class="header-badge">
+      <span class="remaining-badge">{{ remaining }} generaciones restantes</span>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-row">
+    <div class="filter-group">
+      <label>TIPO DE DOCUMENTACIÓN</label>
+      <div class="custom-select-wrapper">
+        <select [(ngModel)]="docType" class="dark-select">
+          <option *ngFor="let t of docTypes" [value]="t.value">{{ t.label }}</option>
+        </select>
+      </div>
+    </div>
+    <div class="filter-group">
+      <label>LENGUAJE DEL CÓDIGO</label>
+      <div class="custom-select-wrapper">
+        <select [(ngModel)]="language" class="dark-select">
+          <option *ngFor="let l of languages" [value]="l.value">{{ l.label }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Editor Area -->
+  <div class="editor-section">
+    <div class="editor-header">
+      <label>TU CÓDIGO</label>
+      <span class="char-count">{{ characterCount }} caracteres</span>
+    </div>
+    <textarea 
+      class="code-editor" 
+      [(ngModel)]="code" 
+      placeholder="// Pega aquí tu código..."></textarea>
+  </div>
+
+  <!-- Generate Button -->
+  <button class="generate-btn" (click)="generate()" [disabled]="!code || isGenerating">
+    <mat-spinner *ngIf="isGenerating" diameter="20"></mat-spinner>
+    <span *ngIf="!isGenerating">Generar documentación</span>
+  </button>
+
+  <!-- Result Area -->
+  <div class="result-section" *ngIf="result || isGenerating">
+    <div class="result-header">
+      <div class="result-title">
+        <mat-icon>article</mat-icon>
+        <span>Resultado</span>
+        <span class="result-badge">README</span>
+      </div>
+      <div class="result-actions">
+        <button class="icon-btn" (click)="copyResult()" title="Copiar">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+        <button class="icon-btn" title="Guardar/Descargar">
+          <mat-icon>save</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="result-content" *ngIf="!isGenerating">
+      <pre>{{ result }}</pre>
+    </div>
+    <div class="result-content" *ngIf="isGenerating" style="display: flex; justify-content: center; padding: 40px;">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  </div>
+</div>
