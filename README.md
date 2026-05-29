@@ -45,7 +45,7 @@ devbrief-ai/
 ### Prerrequisitos
 
 - Node.js v18+
-- Una API key de Anthropic ([obtener aquí](https://platform.openai.com/))
+- Una API key de OpenIA ([obtener aquí](https://platform.openai.com/))
 
 ### Instalación
 
