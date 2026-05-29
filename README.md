@@ -68,7 +68,7 @@ npm install
 Crea un archivo `.env` en la carpeta `backend/`:
 
 ```env
-ANTHROPIC_API_KEY=tu_api_key_aquí
+OPENAI_API_KEY=tu_api_key_aquí
 ```
 
 ### Ejecutar
