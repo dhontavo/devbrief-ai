@@ -13,7 +13,7 @@
 ## ✨ Funcionalidades
 
 - 📦 Análisis automático de la estructura de un repositorio
-- 🧠 Generación de resúmenes con IA (Claude API)
+- 🧠 Generación de resúmenes con IA (OpenIA API)
 - 🖥️ Interfaz web intuitiva para ingresar y visualizar resultados
 - ⚡ Respuestas rápidas mediante integración directa con la API de Anthropic
 
@@ -25,7 +25,7 @@
 |------|-----------|
 | Frontend | TypeScript · HTML · SCSS |
 | Backend | Node.js · JavaScript |
-| IA | Anthropic Claude API |
+| IA |OpenIA API |
 | Control de versiones | Git · GitHub |
 
 ---
