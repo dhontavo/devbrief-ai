@@ -15,10 +15,10 @@ export class GenerateService {
 
   generate(code: string, docType: string, language: string) {
     return this.http.post<{ result: string, remaining: number }>
-      (`${this.api}/`, { code, docType, language }, { headers: this.headers() });
+      (`${this.api}/generate`, { code, docType, language }, { headers: this.headers() });
   }
 
   getHistory() {
-    return this.http.get<any[]>(`${this.api}/generate/history`, { headers: this.headers() });
+    return this.http.get<any[]>(`${this.api}/generate/history?id=${JSON.parse(this.auth.getUser()!).id}`, { headers: this.headers() });
   }
 }

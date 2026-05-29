@@ -53,7 +53,7 @@
       <div class="result-title">
         <mat-icon>article</mat-icon>
         <span>Resultado</span>
-        <span class="result-badge">{{docType}}</span>
+        <span class="result-badge">{{ getDocTypeLabel(docType) }}</span>
       </div>
       <div class="result-actions">
         <button class="icon-btn" (click)="copyResult()" title="Copiar">

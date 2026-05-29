@@ -57,14 +57,14 @@ export class Login implements OnInit {
         next: (response: any) => {
           this.isLoading = false;
           // Guardar el token usando el servicio
-          this.authService.saveToken(response.token, response.user.email);
-          
+          this.authService.saveToken(response.token, response.user);
+
           this.snackBar.open('¡Inicio de sesión exitoso!', 'Cerrar', {
             duration: 3000,
             horizontalPosition: 'center',
             verticalPosition: 'top',
           });
-          
+
           // Redirigir al usuario al dashboard o página principal
           this.router.navigate(['/']); // Asume que la ruta raíz es el dashboard. Cámbialo si es distinto.
         },
@@ -74,9 +74,9 @@ export class Login implements OnInit {
           if (err.status === 401) {
             errorMsg = 'Credenciales incorrectas.';
           } else if (err.error && err.error.message) {
-             errorMsg = err.error.message;
+            errorMsg = err.error.message;
           }
-          
+
           this.snackBar.open(errorMsg, 'Cerrar', {
             duration: 5000,
             horizontalPosition: 'center',

@@ -33,10 +33,6 @@ router.get('/history', authMiddleware, (req, res) => {
     'SELECT id, doc_type, language, result, created_at FROM generations WHERE user_id = ? ORDER BY created_at DESC LIMIT 20'
   ).all(req.user?.id);
 
-  if (history.length === 0) {
-    return res.status(200).json({ message: 'No hay historial disponible.' });
-  }
-
   res.json(history);
 });
 

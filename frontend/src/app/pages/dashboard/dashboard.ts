@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GenerateService } from '../../services/generate.service';
 import { AuthService } from '../../services/auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Navbar } from '../../shared/navbar/navbar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,13 +21,13 @@ interface Generation {
 @Component({
   selector: 'app-dashboard',
   imports: [
-    Navbar,
     CommonModule,
     FormsModule,
     MatIconModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatSnackBarModule
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'
@@ -70,13 +69,29 @@ export class Dashboard implements OnInit {
   loadHistory() {
     this.loading = true;
     this.generateService.getHistory().subscribe({
-      next: (data) => {
+      next: (data: any[]) => {
+        this.loading = false;
+
+        if (!data || !Array.isArray(data) || data.length === 0) {
+          this.generations = [];
+          this.used = 0;
+          this.remaining = this.limit;
+          this.loading = false;
+          // Mostrar mensaje de que no hay generaciones y detener el proceso
+          // this.snackBar.open('No tienes generaciones', 'Cerrar', { duration: 3000 });
+          return;
+        }
+
         this.generations = data;
         this.used = data.length;
         this.remaining = this.limit - this.used;
-        this.loading = false;
+
+        if (this.remaining <= 0) {
+          this.snackBar.open('Has alcanzado tu límite de generaciones gratuitas', 'Cerrar', { duration: 3000 });
+        }
       },
-      error: () => {
+      error: (err) => {
+        console.error('Error loading history:', err);
         this.loading = false;
         this.snackBar.open('Error al cargar el historial', 'Cerrar', { duration: 3000 });
       }

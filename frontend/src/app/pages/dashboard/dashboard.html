@@ -46,16 +46,17 @@
     <h2 class="section-title">Generaciones recientes</h2>
 
     <!-- Loading State -->
-    <div *ngIf="loading" class="loading-state">
+    <div *ngIf="loading === true && generations.length!==0 || loading === true && generations.length!== undefined"
+        class="loading-state">
         <mat-spinner diameter="40"></mat-spinner>
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!loading && generations.length === 0" class="empty-state">
+    <div *ngIf="!loading && generations.length === 0 || loading === false && generations.length === undefined"
+        class="empty-state">
         <mat-icon class="empty-icon">description</mat-icon>
         <p>Aún no tienes generaciones. ¡Crea tu primera!</p>
         <button class="new-gen-btn primary-btn" (click)="goToGenerator()">Generar documentación</button>
-        <!-- <button class="new-gen-btn primary-btn" href="/generator">Generar documentación</button> -->
     </div>
 
     <!-- List State -->

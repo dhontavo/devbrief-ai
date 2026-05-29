@@ -17,13 +17,15 @@ export class AuthService {
     return this.http.post<{ token: string, email: string }>(`${this.api}/auth/login`, { email, password });
   }
 
-  saveToken(token: string, email: string) {
+  saveToken(token: string, user: any) {
     localStorage.setItem('token', token);
-    localStorage.setItem('email', email);
+    localStorage.setItem('email', user.email);
+    localStorage.setItem('user', JSON.stringify(user));
   }
 
   getToken() { return localStorage.getItem('token'); }
   getEmail() { return localStorage.getItem('email'); }
+  getUser() { return localStorage.getItem('user'); }
   isLoggedIn() { return !!this.getToken(); }
 
   logout() {

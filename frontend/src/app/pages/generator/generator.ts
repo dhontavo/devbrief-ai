@@ -6,10 +6,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GenerateService } from '../../services/generate.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-generator',
-  imports: [Navbar, CommonModule, FormsModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule],
+  imports: [Navbar, CommonModule, FormsModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule, MatSnackBarModule],
   templateUrl: './generator.html',
   styleUrl: './generator.scss',
 })
@@ -36,7 +37,10 @@ export class Generator implements OnInit {
     { value: 'python', label: 'Python' }
   ];
 
-  constructor(private generateService: GenerateService) { }
+  constructor(
+    private generateService: GenerateService,
+    private snackBar: MatSnackBar
+  ) { }
 
   ngOnInit() {
     // Initial state
@@ -49,22 +53,22 @@ export class Generator implements OnInit {
   generate() {
     if (!this.code) return;
     this.isGenerating = true;
+    this.result = '';
 
-    this.docType = this.docTypes.find(t => t.value === this.docType)?.label || 'README para GitHub';
+    const selectedDocType = this.docType;
 
-    this.generateService.generate(this.code, this.docType, this.language).subscribe({
+    this.generateService.generate(this.code, selectedDocType, this.language).subscribe({
       next: (response) => {
         this.result = response.result;
         this.isGenerating = false;
         this.remaining--;
+        this.snackBar.open('Documentación generada con éxito', 'Cerrar', { duration: 3000 });
       },
       error: (error) => {
         console.error('Error al generar documentación:', error);
-        setTimeout(() => {
-          this.result = "";
-          this.isGenerating = false;
-          this.remaining--;
-        }, 1500);
+        this.isGenerating = false;
+        const errorMsg = error.error?.detail || error.error?.error || 'Error al conectar con el servidor';
+        this.snackBar.open(`Error: ${errorMsg}`, 'Cerrar', { duration: 5000 });
       }
     });
 
@@ -73,5 +77,9 @@ export class Generator implements OnInit {
 
   copyResult() {
     navigator.clipboard.writeText(this.result);
+  }
+
+  getDocTypeLabel(value: string): string {
+    return this.docTypes.find(t => t.value === value)?.label || value;
   }
 }
